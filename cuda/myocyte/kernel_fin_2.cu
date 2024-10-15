@@ -1,9 +1,11 @@
 //=====================================================================
 //	MAIN FUNCTION
 //=====================================================================
+#include <cuda/atomic>
+
 __device__ void kernel_fin_2(	int timeinst,
 													fp* d_initvalu,
-													fp* d_finavalu,
+													cuda::atomic<fp, cuda::thread_scope_device>* d_finavalu,
 													int offset_ecc,
 													int offset_Dyad,
 													int offset_SL,

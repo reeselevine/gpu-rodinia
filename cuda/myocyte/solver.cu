@@ -57,9 +57,6 @@
 
 #include <math.h>
 
-#define max(x,y) ( (x) < (y) ? (y) : (x) )
-#define min(x,y) ( (x) < (y) ? (x) : (y) )
-
 #define ATTEMPTS 12
 #define MIN_SCALE_FACTOR 0.125
 #define MAX_SCALE_FACTOR 4.0
@@ -214,7 +211,17 @@ int solver(	fp** y,
 					scale_min = scale[i];
 				}
 			}
-			scale_fina = min( max(scale_min,MIN_SCALE_FACTOR), MAX_SCALE_FACTOR);
+				fp intermediate;
+				if (scale_min > MIN_SCALE_FACTOR) {
+					intermediate = scale_min;
+				} else {
+					intermediate = MIN_SCALE_FACTOR;
+				}
+				if (intermediate > MAX_SCALE_FACTOR) {
+					intermediate = MAX_SCALE_FACTOR;
+				}
+
+			scale_fina = intermediate;
 
 			//============================================================
 			//		IF WITHIN TOLERANCE, FINISH ATTEMPTS...

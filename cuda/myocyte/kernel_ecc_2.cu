@@ -3,7 +3,7 @@
 //=====================================================================
 __device__ void kernel_ecc_2(	fp timeinst,
 													fp* d_initvalu,
-													fp* d_finavalu,
+													cuda::atomic<fp, cuda::thread_scope_device>* d_finavalu,
 													int valu_offset,
 													fp* d_params){
 

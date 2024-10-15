@@ -94,7 +94,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 																			fp* error,
 																			fp* initvalu_temp,
-																			fp* finavalu_temp,
+																			cuda::atomic<fp, cuda::thread_scope_device>* finavalu_temp,
 																			fp* com) {
 
 	//======================================================================================================================================================

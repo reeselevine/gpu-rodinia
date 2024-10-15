@@ -8,6 +8,7 @@
 #include "kernel_2.cu"
 #include "embedded_fehlberg_7_8_2.cu"
 #include "solver_2.cu"
+#include <cuda/atomic>
 
 //====================================================================================================100
 //		MAIN FUNCTION
@@ -77,7 +78,7 @@ int work_2(	int xmax,
 	fp* d_initvalu_temp;
 	int initvalu_temp_mem;
 
-	fp* d_finavalu_temp;
+	cuda::atomic<fp, cuda::thread_scope_device>* d_finavalu_temp;
 	int finavalu_temp_mem;
 
 	//============================================================60

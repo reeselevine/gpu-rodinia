@@ -7,9 +7,10 @@
 __device__ void kernel_2(	int timeinst,
 											fp* initvalu,
 											fp* params,
-											fp* finavalu,
+											cuda::atomic<fp, cuda::thread_scope_device>* finavalu,
 											fp* com){
 
+	cuda::memory_order mem_order = cuda::memory_order_relaxed;
 	//======================================================================================================================================================
 	// 	VARIABLES
 	//======================================================================================================================================================
@@ -126,11 +127,11 @@ __device__ void kernel_2(	int timeinst,
 	//====================================================================================================
 
 	for(i=0; i<EQUATIONS; i++){
-		if (isnan(finavalu[i]) == 1){ 
-			finavalu[i] = 0.0001;												// for NAN set rate of change to 0.0001
+		if (isnan(finavalu[i].load(mem_order)) == 1){ 
+			finavalu[i].store(0.0001, mem_order);												// for NAN set rate of change to 0.0001
 		}
-		else if (isinf(finavalu[i]) == 1){ 
-			finavalu[i] = 0.0001;												// for INF set rate of change to 0.0001
+		else if (isinf(finavalu[i].load(mem_order)) == 1){ 
+			finavalu[i].store(0.0001, mem_order);												// for INF set rate of change to 0.0001
 		}
 	}
 

@@ -5,9 +5,7 @@
 //======================================================================================================================================================
 
 #include <math.h>
-
-#define max(x,y) ( (x) < (y) ? (y) : (x) )
-#define min(x,y) ( (x) < (y) ? (x) : (y) )
+#include <cuda/atomic>
 
 #define ATTEMPTS 12
 #define MIN_SCALE_FACTOR 0.125
@@ -19,10 +17,12 @@
 //======================================================================================================================================================
 //======================================================================================================================================================
 
+
 __global__ void solver_2(	int workload,
 											int xmax,
 
 											fp* x,
+//											fp* y,
 											fp* y,
 											fp* params,
 
@@ -31,7 +31,7 @@ __global__ void solver_2(	int workload,
 											fp* scale,
 											fp* yy,
 											fp* initvalu_temp,
-											fp* finavalu_temp){
+											cuda::atomic<fp, cuda::thread_scope_device>* finavalu_temp){
 
 	//========================================================================================================================
 	//	VARIABLES
@@ -197,7 +197,17 @@ __global__ void solver_2(	int workload,
 						scale_min = scale[scale_pointer+i];
 					}
 				}
-				scale_fina = min( max(scale_min,MIN_SCALE_FACTOR), MAX_SCALE_FACTOR);
+
+				fp intermediate;
+				if (scale_min > MIN_SCALE_FACTOR) {
+					intermediate = scale_min;
+				} else {
+					intermediate = MIN_SCALE_FACTOR;
+				}
+				if (intermediate > MAX_SCALE_FACTOR) {
+					intermediate = MAX_SCALE_FACTOR;
+				}
+				scale_fina = intermediate;
 
 				//============================================================
 				//		IF WITHIN TOLERANCE, FINISH ATTEMPTS...
