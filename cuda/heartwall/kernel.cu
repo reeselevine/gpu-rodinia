@@ -4,6 +4,8 @@
 //===============================================================================================================================================================================================================
 //===============================================================================================================================================================================================================
 
+#include <cuda/atomic>
+
 __global__ void kernel(){
 
 	//======================================================================================================================================================
@@ -58,7 +60,8 @@ __global__ void kernel(){
 	float variance;
 	float deviation;
 	__shared__ float denomT;
-	__shared__ float par_max_val[131];															// WATCH THIS !!! HARDCODED VALUE
+	__shared__ cuda::atomic<float, cuda::thread_scope_device> par_max_val[131];															// WATCH THIS !!! HARDCODED VALUE
+	cuda::memory_order mem_order = cuda::memory_order_relaxed; 
 	__shared__ int par_max_coo[131];															// WATCH THIS !!! HARDCODED VALUE
 	int pointer;
 	__shared__ float d_in_mod_temp[2601];
@@ -1234,7 +1237,7 @@ __global__ void kernel(){
 				}
 			}
 			par_max_coo[ei_new] = largest_coordinate;
-			par_max_val[ei_new] = largest_value;
+			par_max_val[ei_new].store(largest_value, mem_order);
 
 			// go for second round
 			ei_new = ei_new + NUMBER_THREADS;
@@ -1254,8 +1257,8 @@ __global__ void kernel(){
 		if(tx == 0){
 
 			for(i = 0; i < d_common.mask_conv_rows; i++){
-				if(par_max_val[i] > fin_max_val){
-					fin_max_val = par_max_val[i];
+				if(par_max_val[i].load(mem_order) > fin_max_val){
+					fin_max_val = par_max_val[i].load(mem_order);
 					fin_max_coo = par_max_coo[i];
 				}
 			}
@@ -1340,3 +1343,6 @@ __global__ void kernel(){
 
 // makeAtomic:
 // par_max_val: control dependency (1257), written to (1237)
+// d_common_change.frame_no: control dependency (83), readonly
+// d_unique.point_no: index dependency (lots of places), readonly
+// d_unique fields used to index are read only
