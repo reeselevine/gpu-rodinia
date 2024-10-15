@@ -11,6 +11,8 @@
 #define BLOCK_Y 16
 #define PI 3.1415926535897932
 
+#include <cuda/atomic>
+
 const int threads_per_block = 512;
 
 /**
@@ -81,11 +83,12 @@ void cuda_print_double_array(double *array_GPU, size_t size) {
  * param 3 length of ind array
  * returns a double representing the sum
  ********************************/
-__device__ double calcLikelihoodSum(unsigned char * I, int * ind, int numOnes, int index) {
+__device__ double calcLikelihoodSum(unsigned char * I, cuda::atomic<int, cuda::thread_scope_device> * ind, int numOnes, int index) {
+	cuda::memory_order mem_order = cuda::memory_order_relaxed;
     double likelihoodSum = 0.0;
     int x;
     for (x = 0; x < numOnes; x++)
-        likelihoodSum += (pow((double) (I[ind[index * numOnes + x]] - 100), 2) - pow((double) (I[ind[index * numOnes + x]] - 228), 2)) / 50.0;
+        likelihoodSum += (pow((double) (I[ind[index * numOnes + x].load(mem_order)] - 100), 2) - pow((double) (I[ind[index * numOnes + x].load(mem_order)] - 228), 2)) / 50.0;
     return likelihoodSum;
 }
 
@@ -339,7 +342,8 @@ __global__ void sum_kernel(double* partial_sums, int Nparticles) {
  * param11: IszY
  * param12: Nfr
  *****************************/
-__global__ void likelihood_kernel(double * arrayX, double * arrayY, double * xj, double * yj, double * CDF, int * ind, int * objxy, double * likelihood, unsigned char * I, double * u, double * weights, int Nparticles, int countOnes, int max_size, int k, int IszY, int Nfr, int *seed, double* partial_sums) {
+__global__ void likelihood_kernel(double * arrayX, double * arrayY, double * xj, double * yj, double * CDF, cuda::atomic<int, cuda::thread_scope_device> * ind, int * objxy, double * likelihood, unsigned char * I, double * u, double * weights, int Nparticles, int countOnes, int max_size, int k, int IszY, int Nfr, int *seed, double* partial_sums) {
+	cuda::memory_order mem_order = cuda::memory_order_relaxed;
     int block_id = blockIdx.x;
     int i = blockDim.x * block_id + threadIdx.x;
     int y;
@@ -365,9 +369,9 @@ __global__ void likelihood_kernel(double * arrayX, double * arrayY, double * xj,
             indX = dev_round_double(arrayX[i]) + objxy[y * 2 + 1];
             indY = dev_round_double(arrayY[i]) + objxy[y * 2];
             
-            ind[i * countOnes + y] = abs(indX * IszY * Nfr + indY * Nfr + k);
-            if (ind[i * countOnes + y] >= max_size)
-                ind[i * countOnes + y] = 0;
+            ind[i * countOnes + y].store(abs(indX * IszY * Nfr + indY * Nfr + k), mem_order);
+            if (ind[i * countOnes + y].load(mem_order) >= max_size)
+                ind[i * countOnes + y].store(0, mem_order);
         }
         likelihood[i] = calcLikelihoodSum(I, ind, countOnes, i);
         
@@ -692,7 +696,7 @@ void particleFilter(unsigned char * I, int IszX, int IszY, int Nfr, int * seed, 
     int * objxy_GPU;
 
     int * ind = (int*) malloc(sizeof (int) *countOnes * Nparticles);
-    int * ind_GPU;
+    cuda::atomic<int, cuda::thread_scope_device> * ind_GPU;
     double * u = (double *) malloc(sizeof (double) *Nparticles);
     double * u_GPU;
     int * seed_GPU;
