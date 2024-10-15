@@ -39,4 +39,8 @@ Kernel( Node* g_graph_nodes, int* g_graph_edges, bool* g_graph_mask, bool* g_upd
 
 #endif 
 
-// makeAtomic: NA
+// makeAtomic:
+// g_graph_edges: index dependency of g_graph_visited (31), read only
+// g_graph_visited: control dependency of g_cost (31), read only
+// g_graph_nodes: control dependency of g_graph_edges (28), read only
+// g_graph_mask: control dependency of g_graph_mask (25), written to (27)
