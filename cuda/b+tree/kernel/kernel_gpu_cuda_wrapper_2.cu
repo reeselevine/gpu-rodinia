@@ -1,5 +1,4 @@
 #ifdef __cplusplus
-extern "C" {
 #endif
 
 //========================================================================================================================================================================================================200
@@ -112,7 +111,8 @@ kernel_gpu_cuda_wrapper_2(	knode *knodes,
 	//	currKnodeD
 	//==================================================50
 
-	long *currKnodeD;
+	cuda::atomic<long, cuda::thread_scope_device> *currKnodeD;
+	//long *currKnodeD;
 	cudaMalloc((void**)&currKnodeD, count*sizeof(long));
 	checkCUDAError("cudaMalloc  currKnodeD");
 
@@ -120,7 +120,8 @@ kernel_gpu_cuda_wrapper_2(	knode *knodes,
 	//	offsetD
 	//==================================================50
 
-	long *offsetD;
+	cuda::atomic<long, cuda::thread_scope_device> *offsetD;
+	//long *offsetD;
 	cudaMalloc((void**)&offsetD, count*sizeof(long));
 	checkCUDAError("cudaMalloc  offsetD");
 
@@ -128,7 +129,8 @@ kernel_gpu_cuda_wrapper_2(	knode *knodes,
 	//	lastKnodeD
 	//==================================================50
 
-	long *lastKnodeD;
+	cuda::atomic<long, cuda::thread_scope_device> *lastKnodeD;
+	//long *lastKnodeD;
 	cudaMalloc((void**)&lastKnodeD, count*sizeof(long));
 	checkCUDAError("cudaMalloc  lastKnodeD");
 
@@ -136,7 +138,8 @@ kernel_gpu_cuda_wrapper_2(	knode *knodes,
 	//	offset_2D
 	//==================================================50
 
-	long *offset_2D;
+	cuda::atomic<long, cuda::thread_scope_device> *offset_2D;
+	//long *offset_2D;
 	cudaMalloc((void**)&offset_2D, count*sizeof(long));
 	checkCUDAError("cudaMalloc  offset_2D");
 
@@ -343,5 +346,4 @@ kernel_gpu_cuda_wrapper_2(	knode *knodes,
 //========================================================================================================================================================================================================200
 
 #ifdef __cplusplus
-}
 #endif

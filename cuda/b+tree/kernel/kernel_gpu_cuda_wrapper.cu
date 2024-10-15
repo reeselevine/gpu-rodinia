@@ -1,5 +1,4 @@
 #ifdef __cplusplus
-extern "C" {
 #endif
 
 //========================================================================================================================================================================================================200
@@ -118,15 +117,16 @@ kernel_gpu_cuda_wrapper(record *records,
 	//	currKnodeD
 	//==================================================50
 
-	long *currKnodeD;
+	cuda::atomic<long, cuda::thread_scope_device> *currKnodeD;
+	//long *currKnodeD;
 	cudaMalloc((void**)&currKnodeD, count*sizeof(long));
 	checkCUDAError("cudaMalloc  currKnodeD");
 
 	//==================================================50
 	//	offsetD
 	//==================================================50
-
-	long *offsetD;
+	cuda::atomic<long, cuda::thread_scope_device> *offsetD;
+	//long *offsetD;
 	cudaMalloc((void**)&offsetD, count*sizeof(long));
 	checkCUDAError("cudaMalloc  offsetD");
 
@@ -288,5 +288,4 @@ kernel_gpu_cuda_wrapper(record *records,
 //========================================================================================================================================================================================================200
 
 #ifdef __cplusplus
-}
 #endif
