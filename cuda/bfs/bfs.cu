@@ -163,11 +163,11 @@ void BFSGraph( int argc, char** argv)
 	cudaMemcpy( d_graph_edges, h_graph_edges, sizeof(int)*edge_list_size, cudaMemcpyHostToDevice) ;
 
 	//Copy the Mask to device memory
-	bool* d_graph_mask;
+	cuda::atomic<bool, cuda::thread_scope_device>* d_graph_mask;
 	cudaMalloc( (void**) &d_graph_mask, sizeof(bool)*no_of_nodes) ;
 	cudaMemcpy( d_graph_mask, h_graph_mask, sizeof(bool)*no_of_nodes, cudaMemcpyHostToDevice) ;
 
-	bool* d_updating_graph_mask;
+	cuda::atomic<bool, cuda::thread_scope_device>* d_updating_graph_mask;
 	cudaMalloc( (void**) &d_updating_graph_mask, sizeof(bool)*no_of_nodes) ;
 	cudaMemcpy( d_updating_graph_mask, h_updating_graph_mask, sizeof(bool)*no_of_nodes, cudaMemcpyHostToDevice) ;
 

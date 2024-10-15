@@ -18,20 +18,23 @@ The CUDA Kernel for Applying BFS on a loaded Graph. Created By Pawan Harish
 #ifndef _KERNEL_H_
 #define _KERNEL_H_
 
+#include <cuda/atomic>
+
 __global__ void
-Kernel( Node* g_graph_nodes, int* g_graph_edges, bool* g_graph_mask, bool* g_updating_graph_mask, bool *g_graph_visited, int* g_cost, int no_of_nodes) 
+Kernel( Node* g_graph_nodes, int* g_graph_edges, cuda::atomic<bool, cuda::thread_scope_device>* g_graph_mask, cuda::atomic<bool, cuda::thread_scope_device>* g_updating_graph_mask, bool *g_graph_visited, int* g_cost, int no_of_nodes) 
 {
+	cuda::memory_order mem_order = cuda::memory_order_relaxed; 
 	int tid = blockIdx.x*MAX_THREADS_PER_BLOCK + threadIdx.x;
-	if( tid<no_of_nodes && g_graph_mask[tid])
+	if( tid<no_of_nodes && g_graph_mask[tid].load(mem_order))
 	{
-		g_graph_mask[tid]=false;
+		g_graph_mask[tid].store(false, mem_order);
 		for(int i=g_graph_nodes[tid].starting; i<(g_graph_nodes[tid].no_of_edges + g_graph_nodes[tid].starting); i++)
 			{
 			int id = g_graph_edges[i];
 			if(!g_graph_visited[id])
 				{
 				g_cost[id]=g_cost[tid]+1;
-				g_updating_graph_mask[id]=true;
+				g_updating_graph_mask[id].store(true, mem_order);
 				}
 			}
 	}
