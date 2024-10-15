@@ -391,3 +391,5 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 	}
 
 }
+
+// makeAtomic: NA

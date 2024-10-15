@@ -161,7 +161,10 @@ __global__ static void vlc_encode_kernel_sm64huff(unsigned int* data,
 
 // makeAtomic:
 // data: index dependency (68), readonly
-// as: index dependency (135), writen to (lots of places)
+// as: index dependency (135), written to (lots of places), private
+// codewordlen: data dependency of as (84), written to 
+// gm_codewordlens: data dependency of codewordlens (84), read only
+// gm_codewords: also data dependency of as transitively (78), read only
 
 //////////////////////////////////////////////////////////////////////////////								  
 #endif

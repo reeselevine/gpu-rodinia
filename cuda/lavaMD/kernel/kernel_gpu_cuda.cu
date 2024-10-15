@@ -212,3 +212,6 @@ __global__ void kernel_gpu_cuda(par_str d_par_gpu,
 	}
 
 }
+
+// makeAtomic:
+// d_box_gpu: control dependency (97), index dependency (115), readonly

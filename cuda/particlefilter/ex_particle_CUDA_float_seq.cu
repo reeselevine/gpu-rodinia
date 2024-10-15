@@ -264,6 +264,11 @@ __global__ void find_index_kernel(double * arrayX, double * arrayY, double * CDF
     __syncthreads();
 }
 
+// makeAtomic
+// index: index dependency (258), written to (250), private
+// CDF: control dependency (249), readonly
+// u: control dependency (249), readonly
+
 __global__ void normalize_weights_kernel(double * weights, int Nparticles, double* partial_sums, double * CDF, double * u, int * seed) {
     int block_id = blockIdx.x;
     int i = blockDim.x * block_id + threadIdx.x;
@@ -297,6 +302,8 @@ __global__ void normalize_weights_kernel(double * weights, int Nparticles, doubl
     }
 }
 
+// makeAtomic: NA
+
 __global__ void sum_kernel(double* partial_sums, int Nparticles) {
     int block_id = blockIdx.x;
     int i = blockDim.x * block_id + threadIdx.x;
@@ -311,6 +318,8 @@ __global__ void sum_kernel(double* partial_sums, int Nparticles) {
         partial_sums[0] = sum;
     }
 }
+
+// makeAtomic: NA
 
 /*****************************
  * CUDA Likelihood Kernel Function to replace FindIndex
@@ -396,6 +405,9 @@ __global__ void likelihood_kernel(double * arrayX, double * arrayY, double * xj,
 
     
 }
+
+// makeAtomic
+// ind: control dependency (360), written to (368)
 
 /** 
  * Takes in a double and returns an integer that approximates to that double

@@ -928,3 +928,5 @@ __device__ void kernel_ecc_2(	fp timeinst,
 	d_finavalu[offset_42] = 0;
 
 }
+
+// makeAtomic: NA

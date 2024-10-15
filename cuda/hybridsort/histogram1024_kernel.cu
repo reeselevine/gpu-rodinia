@@ -113,6 +113,9 @@ __global__ void histogram1024Kernel(unsigned int *d_Result, float *d_Data, float
     }
 }
 
+// makeAtomic:
+// d_data: index dependency (71), from (102), from data4 (1010), readonly
+
 
 //Thread block (== subhistogram) count
 #define BLOCK_N 64

@@ -15,3 +15,5 @@ __global__ void compress(	long d_Ne,
 	}
 
 }
+
+// makeAtomic: NA

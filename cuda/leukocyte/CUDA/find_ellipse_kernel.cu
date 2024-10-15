@@ -80,6 +80,8 @@ __global__ void GICOV_kernel(int grad_m, float *gicov) {
 	gicov[(i * grad_m) + j] = max_GICOV;
 }
 
+// makeAtomic: NA
+
 
 // Sets up and invokes the GICOV kernel and returns its output
 float *GICOV_CUDA(int grad_m, int grad_n, float *host_grad_x, float *host_grad_y) {
@@ -183,6 +185,8 @@ __global__ void dilate_kernel(int img_m, int img_n, int strel_m, int strel_n, fl
 	// Store the maximum value found
 	dilated[(i * img_n) + j] = max;
 }
+
+// makeAtomic: NA
 
 
 // Sets up and invokes the dilation kernel and returns its output

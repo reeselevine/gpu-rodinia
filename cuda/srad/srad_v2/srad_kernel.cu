@@ -156,6 +156,8 @@ srad_cuda_1(
 
 }
 
+// makeAtomic: NA
+
 __global__ void
 srad_cuda_2(
 		  float *E_C, 
@@ -255,3 +257,5 @@ srad_cuda_2(
    J_cuda[index] = c_cuda_result[ty][tx];
     
 }
+
+// makeAtomic: NA

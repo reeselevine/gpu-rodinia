@@ -224,6 +224,8 @@ __global__ void IMGVF_kernel(float **IMGVF_array, float **I_array, int *m_array,
 	}
 }
 
+// makeAtomic: NA
+
 
 // Host function that launches a CUDA kernel to compute the MGVF matrices for the specified cells
 void IMGVF_cuda(MAT **I, MAT **IMGVF, double vx, double vy, double e, int max_iterations, double cutoff, int num_cells) {

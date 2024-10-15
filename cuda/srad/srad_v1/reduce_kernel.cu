@@ -102,3 +102,5 @@ __global__ void reduce(	long d_Ne,											// number of elements in array
 	}
 
 }
+
+// makeAtomic: NA

@@ -82,3 +82,9 @@ __global__ void srad(	fp d_lambda,
 	}
 	
 }
+
+// makeAtomic:
+// d_iN: index dependency (47), readonly
+// d_iS: index dependency (48), readonly
+// d_jW: index dependency (49), readonly
+// d_jE: index dependency (50), readonly
