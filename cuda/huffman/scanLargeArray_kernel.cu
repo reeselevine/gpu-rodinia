@@ -105,6 +105,8 @@ __device__ static void loadSharedChunkFromMem(unsigned int *s_data,
     }
 }
 
+// makeAtomic: NA
+
 template <bool isNP2>
 __device__ static void storeSharedChunkToMem(unsigned int* g_odata, 
                                       const unsigned int* s_data,
@@ -128,6 +130,8 @@ __device__ static void storeSharedChunkToMem(unsigned int* g_odata,
     }
 }
 
+// makeAtomic: NA
+
 template <bool storeSum>
 __device__ static void clearLastElement(unsigned int* s_data, 
                                  unsigned int *g_blockSums, 
@@ -148,6 +152,8 @@ __device__ static void clearLastElement(unsigned int* s_data,
         s_data[index] = 0;
     }
 }
+
+// makeAtomic: NA
 
 __device__ static unsigned int buildSum(unsigned int *s_data)
 {
@@ -177,6 +183,8 @@ __device__ static unsigned int buildSum(unsigned int *s_data)
     return stride;
 }
 
+// makeAtomic: NA
+
 __device__ static void scanRootToLeaves(unsigned int *s_data, unsigned int stride)
 {
      unsigned int thid = threadIdx.x;
@@ -204,6 +212,8 @@ __device__ static void scanRootToLeaves(unsigned int *s_data, unsigned int strid
     }
 }
 
+// makeAtomic: NA
+
 template <bool storeSum>
 __device__ static void prescanBlock(unsigned int *data, int blockIndex, unsigned int *blockSums)
 {
@@ -212,6 +222,8 @@ __device__ static void prescanBlock(unsigned int *data, int blockIndex, unsigned
                                (blockIndex == 0) ? blockIdx.x : blockIndex);
     scanRootToLeaves(data, stride);            // traverse down tree to build the scan 
 }
+
+// makeAtomic: NA
 
 template <bool storeSum, bool isNP2>
 __global__ static void prescan(unsigned int *g_odata, 
@@ -238,6 +250,8 @@ __global__ static void prescan(unsigned int *g_odata,
                                  bankOffsetA, bankOffsetB);  
 }
 
+// makeAtomic: NA
+
 __global__ static void uniformAdd(unsigned int *g_data, 
                            unsigned int *uniforms, 
                            int n, 
@@ -256,5 +270,7 @@ __global__ static void uniformAdd(unsigned int *g_data,
     g_data[address]              += uni;
     g_data[address + blockDim.x] += (threadIdx.x + blockDim.x < n) * uni;
 }
+
+// makeAtomic: NA
 
 #endif // #ifndef _SCAN_BEST_KERNEL_CU_

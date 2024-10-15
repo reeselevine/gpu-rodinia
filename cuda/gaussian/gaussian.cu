@@ -315,6 +315,8 @@ __global__ void Fan1(float *m_cuda, float *a_cuda, int Size, int t)
 	*(m_cuda+Size*(blockDim.x*blockIdx.x+threadIdx.x+t+1)+t) = *(a_cuda+Size*(blockDim.x*blockIdx.x+threadIdx.x+t+1)+t) / *(a_cuda+Size*t+t);
 }
 
+// makeAtomic: NA
+
 /*-------------------------------------------------------
  ** Fan2() -- Modify the matrix A into LUD
  **-------------------------------------------------------
@@ -337,6 +339,8 @@ __global__ void Fan2(float *m_cuda, float *a_cuda, float *b_cuda,int Size, int j
 		b_cuda[xidx+1+t] -= m_cuda[Size*(xidx+1+t)+(yidx+t)] * b_cuda[t];
 	}
 }
+
+// makeAtomic: NA
 
 /*------------------------------------------------------
  ** ForwardSub() -- Forward substitution of Gaussian

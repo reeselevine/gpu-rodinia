@@ -51,4 +51,7 @@ __global__ static void pack2(unsigned int *srcData, unsigned int *cindex, unsign
 	}
 }
 
+// makeAtomic:
+// cindex: control dependency (36), readonly
+
 #endif

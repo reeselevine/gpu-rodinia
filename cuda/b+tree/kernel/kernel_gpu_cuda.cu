@@ -4,31 +4,32 @@
 
 __global__ void 
 findK(	long height,
-		knode *knodesD,
+		knode *knodesD, 
 		long knodes_elem,
-		record *recordsD,
+		record *recordsD, 
 
-		long *currKnodeD,
-		long *offsetD,
-		int *keysD, 
-		record *ansD)
+		long *currKnodeD, 
+		long *offsetD, 
+		int *keysD,  
+		record *ansD) 
 {
 
 	// private thread IDs
-	int thid = threadIdx.x;
-	int bid = blockIdx.x;
+	int thid = threadIdx.x; 
+	int bid = blockIdx.x; 
 
 	// processtree levels
-	int i;
+	int i; 
 	for(i = 0; i < height; i++){
 
 		// if value is between the two keys
-		if((knodesD[currKnodeD[bid]].keys[thid]) <= keysD[bid] && (knodesD[currKnodeD[bid]].keys[thid+1] > keysD[bid])){
+		if((knodesD[currKnodeD[bid]].keys[thid]) <= keysD[bid] && (knodesD[currKnodeD[bid]].keys[thid+1] > keysD[bid])){ // I: currKnodeD
 			// this conditional statement is inserted to avoid crush due to but in original code
 			// "offset[bid]" calculated below that addresses knodes[] in the next iteration goes outside of its bounds cause segmentation fault
 			// more specifically, values saved into knodes->indices in the main function are out of bounds of knodes that they address
-			if(knodesD[offsetD[bid]].indices[thid] < knodes_elem){
-				offsetD[bid] = knodesD[offsetD[bid]].indices[thid];
+      // makeAtomic: offsetD
+			if(knodesD[offsetD[bid]].indices[thid] < knodes_elem){ // I: offsetD
+				offsetD[bid] = knodesD[offsetD[bid]].indices[thid]; // D: kNodesD.indices
 			}
 		}
 		__syncthreads();
@@ -52,3 +53,8 @@ findK(	long height,
 //========================================================================================================================================================================================================200
 //	End
 //========================================================================================================================================================================================================200
+
+// makeAtomic:
+// currKnodeD: index dependency (26), written to (39)
+// offsetD: index dependency (31), written to (32)
+// knode->indices: data dependency of offsetD (32), read only

@@ -54,6 +54,8 @@ __global__ void hotspotOpt1(float *p, float* tIn, float *tOut, float sdc,
     return;
 }
 
+// makeAtomic: NA
+
 void hotspot_opt1(float *p, float *tIn, float *tOut,
         int nx, int ny, int nz,
         float Cap, 

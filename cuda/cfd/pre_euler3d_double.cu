@@ -128,6 +128,9 @@ __global__ void cuda_initialize_variables(int nelr, double* variables)
 	for(int j = 0; j < NVAR; j++)
 		variables[i + j*nelr] = ff_variable[j];
 }
+
+// makeAtomic: NA
+
 void initialize_variables(int nelr, double* variables)
 {
 	dim3 Dg(nelr / block_length), Db(block_length);
@@ -205,6 +208,9 @@ __global__ void cuda_compute_step_factor(int nelr, double* variables, double* ar
 	// dt = double(0.5) * sqrt(areas[i]) /  (||v|| + c).... but when we do time stepping, this later would need to be divided by the area, so we just do it all at once
 	step_factors[i] = double(0.5) / (sqrt(areas[i]) * (sqrt(speed_sqd) + speed_of_sound));
 }
+
+// makeAtomic: NA
+
 void compute_step_factor(int nelr, double* variables, double* areas, double* step_factors)
 {
   	cudaError_t error;
@@ -258,6 +264,9 @@ __global__ void cuda_compute_flux_contributions(int nelr, double* variables, dou
 	fc_density_energy[i + 2*nelr] = fc_i_density_energy.z;
 
 }
+
+// makeAtomic: NA
+
 void compute_flux_contributions(int nelr, double* variables, double* fc_momentum_x, double* fc_momentum_y, double* fc_momentum_z, double* fc_density_energy)
 {
 	dim3 Dg(nelr / block_length), Db(block_length);
@@ -438,6 +447,10 @@ __global__ void cuda_compute_flux(int nelr, int* elements_surrounding_elements, 
 	fluxes[i + (VAR_MOMENTUM+2)*nelr] = flux_i_momentum.z;
 	fluxes[i + VAR_DENSITY_ENERGY*nelr] = flux_i_density_energy;
 }
+
+// makeAtomic: 
+// elements_surounding_elements: control dependency (354), index dependency (356), readonly
+
 void compute_flux(int nelr, int* elements_surrounding_elements, double* normals, double* variables, double* fc_momentum_x, double* fc_momentum_y, double* fc_momentum_z, double* fc_density_energy, double* fluxes)
 {
 	dim3 Dg(nelr / block_length), Db(block_length);
@@ -465,6 +478,9 @@ __global__ void cuda_time_step(int j, int nelr, double* old_variables, double* v
 	variables[i + (VAR_MOMENTUM+1)*nelr] = old_variables[i + (VAR_MOMENTUM+1)*nelr] + factor*fluxes[i + (VAR_MOMENTUM+1)*nelr];	
 	variables[i + (VAR_MOMENTUM+2)*nelr] = old_variables[i + (VAR_MOMENTUM+2)*nelr] + factor*fluxes[i + (VAR_MOMENTUM+2)*nelr];	
 }
+
+// makeAtomic: NA
+
 void time_step(int j, int nelr, double* old_variables, double* variables, double* step_factors, double* fluxes)
 {
 	cudaError_t error;

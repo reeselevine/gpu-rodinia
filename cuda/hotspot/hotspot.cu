@@ -214,6 +214,8 @@ __global__ void calculate_temp(int iteration,  //number of iteration
       }
 }
 
+// makeAtomic: NA
+
 /*
    compute N time steps
 */

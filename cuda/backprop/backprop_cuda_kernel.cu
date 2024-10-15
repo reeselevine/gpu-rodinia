@@ -112,3 +112,6 @@ __global__ void bpnn_adjust_weights_cuda(float * delta,
 
 }
 #endif 
+
+
+// makeAtomic: NA

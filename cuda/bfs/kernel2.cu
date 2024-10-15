@@ -34,3 +34,5 @@ Kernel2( bool* g_graph_mask, bool *g_updating_graph_mask, bool* g_graph_visited,
 
 #endif
 
+// makeAtomic: NA
+

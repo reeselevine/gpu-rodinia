@@ -51,6 +51,8 @@ __global__ void histo_kernel( unsigned char *buffer,
     atomicAdd( &(histo[threadIdx.x]), temp[threadIdx.x] );
 }
 
+// makeAtomic: NA
+
 int runHisto(char* file, unsigned int* freq, unsigned int memSize, unsigned int *source) {
 
     FILE *f = fopen(file,"rb");

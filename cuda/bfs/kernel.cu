@@ -38,3 +38,5 @@ Kernel( Node* g_graph_nodes, int* g_graph_edges, bool* g_graph_mask, bool* g_upd
 }
 
 #endif 
+
+// makeAtomic: NA

@@ -68,3 +68,10 @@ findRangeK(	long height,
 //========================================================================================================================================================================================================200
 //	End
 //========================================================================================================================================================================================================200
+
+// makeAtomic:
+// currKnodeD: index dependency (29), written to (49)
+// lastKnodeD: index dependency (37), written to (50)
+// offsetD: data dependency of currKnodeD (49), written to (34)
+// offset_2D: data dependency of lastKnodeD (50), written to (42)
+// knode->indices: data dependency of offsetD (34), read only

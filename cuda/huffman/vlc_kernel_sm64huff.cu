@@ -158,6 +158,11 @@ __global__ static void vlc_encode_kernel_sm64huff(unsigned int* data,
 	if (k<=kcmax) out[kn] = as[k];
 
 }
+
+// makeAtomic:
+// data: index dependency (68), readonly
+// as: index dependency (135), writen to (lots of places)
+
 //////////////////////////////////////////////////////////////////////////////								  
 #endif
 

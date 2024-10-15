@@ -176,6 +176,9 @@ __global__ void cuda_initialize_variables(int nelr, float* variables)
 	for(int j = 0; j < NVAR; j++)
 		variables[i + j*nelr] = ff_variable[j];
 }
+
+// makeAtomic: NA
+
 void initialize_variables(int nelr, float* variables)
 {
 	dim3 Dg(nelr / BLOCK_SIZE_1), Db(BLOCK_SIZE_1);
@@ -246,6 +249,9 @@ __global__ void cuda_compute_step_factor(int nelr, float* variables, float* area
 	// dt = float(0.5f) * sqrtf(areas[i]) /  (||v|| + c).... but when we do time stepping, this later would need to be divided by the area, so we just do it all at once
 	step_factors[i] = float(0.5f) / (sqrtf(areas[i]) * (sqrtf(speed_sqd) + speed_of_sound));
 }
+
+// makeAtomic: NA
+
 void compute_step_factor(int nelr, float* variables, float* areas, float* step_factors)
 {
 	dim3 Dg(nelr / BLOCK_SIZE_2), Db(BLOCK_SIZE_2);
@@ -387,6 +393,11 @@ __global__ void cuda_compute_flux(int nelr, int* elements_surrounding_elements, 
 	fluxes[i + (VAR_MOMENTUM+2)*nelr] = flux_i_momentum.z;
 	fluxes[i + VAR_DENSITY_ENERGY*nelr] = flux_i_density_energy;
 }
+
+// makeAtomic:
+// elements_surounding_elements: control dependency (315), index dependency (317), readonly
+
+
 void compute_flux(int nelr, int* elements_surrounding_elements, float* normals, float* variables, float* fluxes)
 {
 	dim3 Dg(nelr / BLOCK_SIZE_3), Db(BLOCK_SIZE_3);
@@ -406,6 +417,9 @@ __global__ void cuda_time_step(int j, int nelr, float* old_variables, float* var
 	variables[i + (VAR_MOMENTUM+1)*nelr] = old_variables[i + (VAR_MOMENTUM+1)*nelr] + factor*fluxes[i + (VAR_MOMENTUM+1)*nelr];	
 	variables[i + (VAR_MOMENTUM+2)*nelr] = old_variables[i + (VAR_MOMENTUM+2)*nelr] + factor*fluxes[i + (VAR_MOMENTUM+2)*nelr];	
 }
+
+// makeAtomic: NA
+
 void time_step(int j, int nelr, float* old_variables, float* variables, float* step_factors, float* fluxes)
 {
 	dim3 Dg(nelr / BLOCK_SIZE_4), Db(BLOCK_SIZE_4);
