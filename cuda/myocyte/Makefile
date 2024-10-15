@@ -35,7 +35,7 @@ main.o:	define.c \
 				kernel_fin_2.cu \
 				file.c \
 				timer.c
-	nvcc	main.cu \
+	nvcc	main.cu -arch sm_80 \
 				-c -O3 -g
 
 # delete all object files
