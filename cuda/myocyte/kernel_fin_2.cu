@@ -103,3 +103,5 @@ __device__ void kernel_fin_2(	int timeinst,
 	d_finavalu[offset_Cyt+2] = d_finavalu[offset_Cyt+2] + J_ca4cam_SLmyo/Vmyo;
 
 }
+
+// makeAtomic: NA

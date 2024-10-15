@@ -15,3 +15,5 @@ __global__ void extract(	long d_Ne,
 	}
 
 }
+
+// makeAtomic: NA

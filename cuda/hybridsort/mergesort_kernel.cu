@@ -64,6 +64,8 @@ mergeSortFirst(float4 *result, int listsize)
 		}
 }
 
+// makeAtomic: NA
+
 __global__ void
 mergeSortPass(float4 *result, int nrElems, int threadsPerDiv) 
 {
@@ -139,6 +141,8 @@ mergeSortPass(float4 *result, int nrElems, int threadsPerDiv)
 	resStart[outidx++] = b;
 }
 
+// makeAtomic: NA
+
 __global__ void
 mergepack(float *orig, float *result) 
 {
@@ -148,6 +152,11 @@ mergepack(float *orig, float *result)
 	if((finalStartAddr[division] + idx) >= finalStartAddr[division + 1]) return; 
 	result[finalStartAddr[division] + idx] = orig[constStartAddr[division]*4 + nullElems[division] + idx]; 
 }
+
+// makeAtomic:
+// finalStartAddr: control dependency (152), readonly
+// constStartAddr: index dependency (153), readonly
+// nullElems: index dependency (153) readonly
 
 
 #endif // #ifndef _MATRIXMUL_KERNEL_H_

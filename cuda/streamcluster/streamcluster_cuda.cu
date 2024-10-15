@@ -88,6 +88,11 @@ kernel_compute_cost(int num, int dim, long x, Point *p, int K, int stride,
 	}
 }
 
+// makeAtomic:
+// p.cost: control dependency (78), readonly
+// p->assign: index dependency (86), readonly
+// center_table_d: index dependency (86), readonly
+
 //=======================================
 // Allocate Device Memory
 //=======================================

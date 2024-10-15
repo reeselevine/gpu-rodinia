@@ -18,3 +18,5 @@ __global__ void prepare(	long d_Ne,
 	}
 
 }
+
+// makeAtomic: NA

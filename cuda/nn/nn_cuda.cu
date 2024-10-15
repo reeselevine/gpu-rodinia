@@ -71,6 +71,8 @@ __global__ void euclid(LatLong *d_locations, float *d_distances, int numRecords,
 	}
 }
 
+// makeAtomic: NA
+
 /**
 * This program finds the k-nearest neighbors
 **/

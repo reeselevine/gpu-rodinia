@@ -106,3 +106,5 @@ void kernel_fin(	fp *initvalu,
 	finavalu[initvalu_offset_Cyt+2] = finavalu[initvalu_offset_Cyt+2] + J_ca4cam_SLmyo/Vmyo;
 
 }
+
+// makeAtomic: NA

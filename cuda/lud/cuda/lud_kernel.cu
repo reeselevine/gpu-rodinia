@@ -54,6 +54,8 @@ lud_diagonal(float *m, int matrix_dim, int offset)
   }
 }
 
+// makeAtomic: NA
+
 __global__ void
 lud_perimeter(float *m, int matrix_dim, int offset)
 {
@@ -164,6 +166,8 @@ lud_perimeter(float *m, int matrix_dim, int offset)
 
 }
 
+// makeAtomic: NA
+
 __global__ void
 lud_internal(float *m, int matrix_dim, int offset)
 {
@@ -188,6 +192,8 @@ lud_internal(float *m, int matrix_dim, int offset)
 
 
 }
+
+// makeAtomic: NA
 
 
 void lud_cuda(float *m, int matrix_dim)

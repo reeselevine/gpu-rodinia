@@ -65,6 +65,8 @@ bucketcount( float *input, int *indice, unsigned int *d_prefixoffsets, int size)
 		d_prefixoffsets[prefixBase + i] = s_offset[i] & 0x07FFFFFFU; 
 }
 
+// makeAtomic: NA
+
 __global__ void bucketprefixoffset(unsigned int *d_prefixoffsets, unsigned int *d_offsets, int blocks) {
 	int tid = blockIdx.x * blockDim.x + threadIdx.x; 
 	int size = blocks * BUCKET_BLOCK_MEMORY; 
@@ -78,6 +80,8 @@ __global__ void bucketprefixoffset(unsigned int *d_prefixoffsets, unsigned int *
 
 	d_offsets[tid] = sum; 
 }
+
+// makeAtomic: NA
 
 __global__ void
 bucketsort(float *input, int *indice, float *output, int size, unsigned int *d_prefixoffsets, 
@@ -103,5 +107,9 @@ bucketsort(float *input, int *indice, float *output, int size, unsigned int *d_p
 
 	}
 }
+
+// makeAtomic:
+// indice: index dependency (105), read only
+// s_offset: index dependency (105), written to (96), already volatile
 
 #endif 

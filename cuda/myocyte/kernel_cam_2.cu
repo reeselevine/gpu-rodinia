@@ -349,3 +349,5 @@ __device__ void kernel_cam_2(	fp timeinst,
 	//d_finavalu[JCa] = 1; // [uM/msec]
 	
 }
+
+// makeAtomic: NA

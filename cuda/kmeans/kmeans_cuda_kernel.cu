@@ -45,6 +45,9 @@ __global__ void invert_mapping(float *input,			/* original */
 	}
 	return;
 }
+
+// makeAtomic: NA
+
 /* ----------------- invert_mapping() end --------------------- */
 
 /* to turn on the GPU delta and center reduction */
@@ -182,4 +185,8 @@ kmeansPoint(float  *features,			/* in: [npoints*nfeatures] */
 #endif
 
 }
+
+// makeAtomic:
+// membership: control dependency (119), written to (124), but GPU_DELTA_REDUCTION off by default
+
 #endif // #ifndef _KMEANS_CUDA_KERNEL_H_

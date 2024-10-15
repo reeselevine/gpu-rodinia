@@ -165,6 +165,8 @@ __global__ void dynproc_kernel(
       }
 }
 
+// makeAtomic: NA
+
 /*
    compute N time steps
 */
