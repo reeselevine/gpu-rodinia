@@ -37,10 +37,10 @@
 //     finavalu_temp[9] = f( x[i]+h/3, y[i]+h*( -91/108 k1 + 23/108 finavalu_temp[3] - 976/135 finavalu_temp[4]        //
 //                             + 311/54 finavalu_temp[5] - 19/60 finavalu_temp[6] + 17/6 finavalu_temp[7] - 1/12 finavalu_temp[8]) ), //
 //     finavalu_temp[10] = f( x[i]+h, y[i]+h*( 2383/4100 k1 - 341/164 finavalu_temp[3] + 4496/1025 finavalu_temp[4]     //
-//          - 301/82 finavalu_temp[5] + 2133/4100 finavalu_temp[6] + 45/82 finavalu_temp[7] + 45/164 finavalu_temp[8] + 18/41 finavalu_temp[9]) )  //
+//          - 301/82 finavalu_temp[5] + 2133/4100 finavalu_temp[6] + 45/82 finavalu_temp[7].load(mem_order) + 45/164 finavalu_temp[8] + 18/41 finavalu_temp[9]) )  //
 //     finavalu_temp[11] = f( x[i], y[i]+h*( 3/205 k1 - 6/41 finavalu_temp[5] - 3/205 finavalu_temp[6] - 3/41 finavalu_temp[7]        //
 //                                                   + 3/41 finavalu_temp[8] + 6/41 finavalu_temp[9]) )  //
-//     finavalu_temp[12] = f( x[i]+h, y[i]+h*( -1777/4100 k1 - 341/164 finavalu_temp[3] + 4496/1025 finavalu_temp[4]    //
+//     finavalu_temp[12].load(mem_order) = f( x[i]+h, y[i]+h*( -1777/4100 k1 - 341/164 finavalu_temp[3] + 4496/1025 finavalu_temp[4]    //
 //                      - 289/82 finavalu_temp[5] + 2193/4100 finavalu_temp[6] + 51/82 finavalu_temp[7] + 33/164 finavalu_temp[8] +   //
 //                                                        12/41 finavalu_temp[9] + finavalu_temp[11]) )  //
 //     x[i+1] = x[i] + h.                                                     //
@@ -100,6 +100,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 	//======================================================================================================================================================
 	//	VARIABLES
 	//======================================================================================================================================================
+    cuda::memory_order mem_order = cuda::memory_order_relaxed;
 
 	const fp c_1_11 = 41.0 / 840.0;
 	const fp c6 = 34.0 / 105.0;
@@ -205,7 +206,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+h2_7;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h2_7 * (finavalu_temp[0*EQUATIONS+i]);
+				initvalu_temp[i] = initvalu[i] + h2_7 * (finavalu_temp[0*EQUATIONS+i].load(mem_order));
 			}
 
 		}
@@ -218,7 +219,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+a3*h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b31*finavalu_temp[0*EQUATIONS+i] + b32*finavalu_temp[1*EQUATIONS+i]);
+				initvalu_temp[i] = initvalu[i] + h * ( b31*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b32*finavalu_temp[1*EQUATIONS+i].load(mem_order));
 			}
 
 		}
@@ -231,7 +232,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+a4*h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b41*finavalu_temp[0*EQUATIONS+i] + b43*finavalu_temp[2*EQUATIONS+i]) ;
+				initvalu_temp[i] = initvalu[i] + h * ( b41*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b43*finavalu_temp[2*EQUATIONS+i].load(mem_order)) ;
 			}
 
 		}
@@ -244,7 +245,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+a5*h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b51*finavalu_temp[0*EQUATIONS+i] + b53*finavalu_temp[2*EQUATIONS+i] + b54*finavalu_temp[3*EQUATIONS+i]) ;
+				initvalu_temp[i] = initvalu[i] + h * ( b51*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b53*finavalu_temp[2*EQUATIONS+i].load(mem_order) + b54*finavalu_temp[3*EQUATIONS+i].load(mem_order)) ;
 			}
 
 		}
@@ -257,7 +258,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+a6*h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b61*finavalu_temp[0*EQUATIONS+i] + b64*finavalu_temp[3*EQUATIONS+i] + b65*finavalu_temp[4*EQUATIONS+i]) ;
+				initvalu_temp[i] = initvalu[i] + h * ( b61*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b64*finavalu_temp[3*EQUATIONS+i].load(mem_order) + b65*finavalu_temp[4*EQUATIONS+i].load(mem_order)) ;
 			}
 
 		}
@@ -270,7 +271,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+a7*h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b71*finavalu_temp[0*EQUATIONS+i] + b74*finavalu_temp[3*EQUATIONS+i] + b75*finavalu_temp[4*EQUATIONS+i] + b76*finavalu_temp[5*EQUATIONS+i]);
+				initvalu_temp[i] = initvalu[i] + h * ( b71*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b74*finavalu_temp[3*EQUATIONS+i].load(mem_order) + b75*finavalu_temp[4*EQUATIONS+i].load(mem_order) + b76*finavalu_temp[5*EQUATIONS+i].load(mem_order));
 			}
 
 		}
@@ -283,7 +284,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+a8*h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b81*finavalu_temp[0*EQUATIONS+i] + b85*finavalu_temp[4*EQUATIONS+i] + b86*finavalu_temp[5*EQUATIONS+i] + b87*finavalu_temp[6*EQUATIONS+i]);
+				initvalu_temp[i] = initvalu[i] + h * ( b81*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b85*finavalu_temp[4*EQUATIONS+i].load(mem_order) + b86*finavalu_temp[5*EQUATIONS+i].load(mem_order) + b87*finavalu_temp[6*EQUATIONS+i].load(mem_order));
 			}
 
 		}
@@ -296,7 +297,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+a9*h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b91*finavalu_temp[0*EQUATIONS+i] + b94*finavalu_temp[3*EQUATIONS+i] + b95*finavalu_temp[4*EQUATIONS+i] + b96*finavalu_temp[5*EQUATIONS+i] + b97*finavalu_temp[6*EQUATIONS+i]+ b98*finavalu_temp[7*EQUATIONS+i]) ;
+				initvalu_temp[i] = initvalu[i] + h * ( b91*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b94*finavalu_temp[3*EQUATIONS+i].load(mem_order) + b95*finavalu_temp[4*EQUATIONS+i].load(mem_order) + b96*finavalu_temp[5*EQUATIONS+i].load(mem_order) + b97*finavalu_temp[6*EQUATIONS+i].load(mem_order)+ b98*finavalu_temp[7*EQUATIONS+i].load(mem_order)) ;
 			}
 
 		}
@@ -309,7 +310,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+a10*h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b10_1*finavalu_temp[0*EQUATIONS+i] + b10_4*finavalu_temp[3*EQUATIONS+i] + b10_5*finavalu_temp[4*EQUATIONS+i] + b10_6*finavalu_temp[5*EQUATIONS+i] + b10_7*finavalu_temp[6*EQUATIONS+i] + b10_8*finavalu_temp[7*EQUATIONS+i] + b10_9*finavalu_temp[8*EQUATIONS+i]) ;
+				initvalu_temp[i] = initvalu[i] + h * ( b10_1*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b10_4*finavalu_temp[3*EQUATIONS+i].load(mem_order) + b10_5*finavalu_temp[4*EQUATIONS+i].load(mem_order) + b10_6*finavalu_temp[5*EQUATIONS+i].load(mem_order) + b10_7*finavalu_temp[6*EQUATIONS+i].load(mem_order) + b10_8*finavalu_temp[7*EQUATIONS+i].load(mem_order) + b10_9*finavalu_temp[8*EQUATIONS+i].load(mem_order)) ;
 			}
 
 		}
@@ -322,7 +323,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b11_1*finavalu_temp[0*EQUATIONS+i] + b11_4*finavalu_temp[3*EQUATIONS+i] + b11_5*finavalu_temp[4*EQUATIONS+i] + b11_6*finavalu_temp[5*EQUATIONS+i] + b11_7*finavalu_temp[6*EQUATIONS+i] + b11_8*finavalu_temp[7*EQUATIONS+i] + b11_9*finavalu_temp[8*EQUATIONS+i]+ b11_10 * finavalu_temp[9*EQUATIONS+i]);
+				initvalu_temp[i] = initvalu[i] + h * ( b11_1*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b11_4*finavalu_temp[3*EQUATIONS+i].load(mem_order) + b11_5*finavalu_temp[4*EQUATIONS+i].load(mem_order) + b11_6*finavalu_temp[5*EQUATIONS+i].load(mem_order) + b11_7*finavalu_temp[6*EQUATIONS+i].load(mem_order) + b11_8*finavalu_temp[7*EQUATIONS+i].load(mem_order) + b11_9*finavalu_temp[8*EQUATIONS+i].load(mem_order)+ b11_10 * finavalu_temp[9*EQUATIONS+i].load(mem_order));
 			}
 
 		}
@@ -335,7 +336,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b12_1*finavalu_temp[0*EQUATIONS+i] + b12_6*finavalu_temp[5*EQUATIONS+i] + b12_7*finavalu_temp[6*EQUATIONS+i] + b12_8*finavalu_temp[7*EQUATIONS+i] + b12_9*finavalu_temp[8*EQUATIONS+i] + b12_10 * finavalu_temp[9*EQUATIONS+i]) ;
+				initvalu_temp[i] = initvalu[i] + h * ( b12_1*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b12_6*finavalu_temp[5*EQUATIONS+i].load(mem_order) + b12_7*finavalu_temp[6*EQUATIONS+i].load(mem_order) + b12_8*finavalu_temp[7*EQUATIONS+i].load(mem_order) + b12_9*finavalu_temp[8*EQUATIONS+i].load(mem_order) + b12_10 * finavalu_temp[9*EQUATIONS+i].load(mem_order)) ;
 			}
 
 		}
@@ -348,7 +349,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 
 			timeinst_temp = timeinst+h;
 			for(i=0; i<EQUATIONS; i++){
-				initvalu_temp[i] = initvalu[i] + h * ( b13_1*finavalu_temp[0*EQUATIONS+i] + b13_4*finavalu_temp[3*EQUATIONS+i] + b13_5*finavalu_temp[4*EQUATIONS+i] + b13_6*finavalu_temp[5*EQUATIONS+i] + b13_7*finavalu_temp[6*EQUATIONS+i] + b13_8*finavalu_temp[7*EQUATIONS+i] + b13_9*finavalu_temp[8*EQUATIONS+i] + b13_10*finavalu_temp[9*EQUATIONS+i] + finavalu_temp[11*EQUATIONS+i]) ;
+				initvalu_temp[i] = initvalu[i] + h * ( b13_1*finavalu_temp[0*EQUATIONS+i].load(mem_order) + b13_4*finavalu_temp[3*EQUATIONS+i].load(mem_order) + b13_5*finavalu_temp[4*EQUATIONS+i].load(mem_order) + b13_6*finavalu_temp[5*EQUATIONS+i].load(mem_order) + b13_7*finavalu_temp[6*EQUATIONS+i].load(mem_order) + b13_8*finavalu_temp[7*EQUATIONS+i].load(mem_order) + b13_9*finavalu_temp[8*EQUATIONS+i].load(mem_order) + b13_10*finavalu_temp[9*EQUATIONS+i].load(mem_order) + finavalu_temp[11*EQUATIONS+i].load(mem_order)) ;
 			}
 
 		}
@@ -360,7 +361,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 		kernel_2(	timeinst_temp,
 							initvalu_temp,
 							parameter,
-							&finavalu_temp[j*EQUATIONS],
+							&finavalu_temp[j*EQUATIONS].load(mem_order),
 							com);
 
 	}
@@ -370,8 +371,8 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 	//======================================================================================================================================================
 
 	for(i=0; i<EQUATIONS; i++){
-		finavalu[i]= initvalu[i] +  h * (c_1_11 * (finavalu_temp[0*EQUATIONS+i] + finavalu_temp[10*EQUATIONS+i])  + c6 * finavalu_temp[5*EQUATIONS+i] + c_7_8 * (finavalu_temp[6*EQUATIONS+i] + finavalu_temp[7*EQUATIONS+i]) + c_9_10 * (finavalu_temp[8*EQUATIONS+i] + finavalu_temp[9*EQUATIONS+i]) );
-		// printf("finavalu_temp[0][%d] = %f\n", i, finavalu_temp[0][i]);
+		finavalu[i]= initvalu[i] +  h * (c_1_11 * (finavalu_temp[0*EQUATIONS+i].load(mem_order) + finavalu_temp[10*EQUATIONS+i].load(mem_order))  + c6 * finavalu_temp[5*EQUATIONS+i].load(mem_order) + c_7_8 * (finavalu_temp[6*EQUATIONS+i].load(mem_order) + finavalu_temp[7*EQUATIONS+i].load(mem_order)) + c_9_10 * (finavalu_temp[8*EQUATIONS+i].load(mem_order) + finavalu_temp[9*EQUATIONS+i].load(mem_order)) );
+		// printf("finavalu_temp[0].load(mem_order)[%d] = %f\n", i, finavalu_temp[0][i]);
 		// printf("finavalu_temp[10][%d] = %f\n", i, finavalu_temp[10][i]);
 		// printf("finavalu_temp[5][%d] = %f\n", i, finavalu_temp[5][i]);
 		// printf("finavalu_temp[6][%d] = %f\n", i, finavalu_temp[6][i]);
@@ -386,7 +387,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 	//======================================================================================================================================================
 
 	for(i=0; i<EQUATIONS; i++){
-		error[i] = fabs(err_factor * (finavalu_temp[0*EQUATIONS+i] + finavalu_temp[10*EQUATIONS+i] - finavalu_temp[11*EQUATIONS+i] - finavalu_temp[12*EQUATIONS+i]));
+		error[i] = fabs(err_factor * (finavalu_temp[0*EQUATIONS+i].load(mem_order) + finavalu_temp[10*EQUATIONS+i].load(mem_order) - finavalu_temp[11*EQUATIONS+i].load(mem_order) - finavalu_temp[12*EQUATIONS+i].load(mem_order)));
 		// printf("Error[%d] = %f\n", i, error[i]);
 	}
 
