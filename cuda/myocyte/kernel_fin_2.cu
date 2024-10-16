@@ -13,6 +13,8 @@ __device__ void kernel_fin_2(	int timeinst,
 													fp* d_params,
 													fp* d_com){
 
+cuda::memory_order mem_order = cuda::memory_order_relaxed;
+
 //=====================================================================
 //	VARIABLES
 //=====================================================================
@@ -51,9 +53,9 @@ __device__ void kernel_fin_2(	int timeinst,
 	CaMKIItotDyad = d_params[2];
 
 	// ADJUST ECC incorporate Ca buffering from CaM, convert JCaCyt from uM/msec to mM/msec
-	d_finavalu[offset_ecc+35] = d_finavalu[offset_ecc+35] + 1e-3*d_com[0];
-	d_finavalu[offset_ecc+36] = d_finavalu[offset_ecc+36] + 1e-3*d_com[1];
-	d_finavalu[offset_ecc+37] = d_finavalu[offset_ecc+37] + 1e-3*d_com[2]; 
+	d_finavalu[offset_ecc+35].store(d_finavalu[offset_ecc+35].load(mem_order) + 1e-3*d_com[0], mem_order);
+	d_finavalu[offset_ecc+36].store(d_finavalu[offset_ecc+36].load(mem_order) + 1e-3*d_com[1], mem_order);
+	d_finavalu[offset_ecc+37].store(d_finavalu[offset_ecc+37].load(mem_order) + 1e-3*d_com[2], mem_order); 
 
 	// incorporate CaM diffusion between compartments
 	Vmyo = 2.1454e-11;																// [L]
@@ -90,19 +92,19 @@ __device__ void kernel_fin_2(	int timeinst,
 	J_ca4cam_SLmyo = kSLmyo * (  d_initvalu[offset_SL+2] - d_initvalu[offset_Cyt+2]);							// [umol/msec]
 
 	// ADJUST CAM Dyad 
-	d_finavalu[offset_Dyad+0] = d_finavalu[offset_Dyad+0] - J_cam_dyadSL;
-	d_finavalu[offset_Dyad+1] = d_finavalu[offset_Dyad+1] - J_ca2cam_dyadSL;
-	d_finavalu[offset_Dyad+2] = d_finavalu[offset_Dyad+2] - J_ca4cam_dyadSL;
+	d_finavalu[offset_Dyad+0].store(d_finavalu[offset_Dyad+0].load(mem_order) - J_cam_dyadSL, mem_order);
+	d_finavalu[offset_Dyad+1].store(d_finavalu[offset_Dyad+1].load(mem_order) - J_ca2cam_dyadSL, mem_order);
+	d_finavalu[offset_Dyad+2].store(d_finavalu[offset_Dyad+2].load(mem_order) - J_ca4cam_dyadSL, mem_order);
 
 	// ADJUST CAM Sl
-	d_finavalu[offset_SL+0] = d_finavalu[offset_SL+0] + J_cam_dyadSL*Vdyad/VSL - J_cam_SLmyo/VSL;
-	d_finavalu[offset_SL+1] = d_finavalu[offset_SL+1] + J_ca2cam_dyadSL*Vdyad/VSL - J_ca2cam_SLmyo/VSL;
-	d_finavalu[offset_SL+2] = d_finavalu[offset_SL+2] + J_ca4cam_dyadSL*Vdyad/VSL - J_ca4cam_SLmyo/VSL;
+	d_finavalu[offset_SL+0].store(d_finavalu[offset_SL+0].load(mem_order) + J_cam_dyadSL*Vdyad/VSL - J_cam_SLmyo/VSL, mem_order);
+	d_finavalu[offset_SL+1].store(d_finavalu[offset_SL+1].load(mem_order) + J_ca2cam_dyadSL*Vdyad/VSL - J_ca2cam_SLmyo/VSL, mem_order);
+	d_finavalu[offset_SL+2].store(d_finavalu[offset_SL+2].load(mem_order) + J_ca4cam_dyadSL*Vdyad/VSL - J_ca4cam_SLmyo/VSL, mem_order);
 
 	// ADJUST CAM Cyt 
-	d_finavalu[offset_Cyt+0] = d_finavalu[offset_Cyt+0] + J_cam_SLmyo/Vmyo;
-	d_finavalu[offset_Cyt+1] = d_finavalu[offset_Cyt+1] + J_ca2cam_SLmyo/Vmyo;
-	d_finavalu[offset_Cyt+2] = d_finavalu[offset_Cyt+2] + J_ca4cam_SLmyo/Vmyo;
+	d_finavalu[offset_Cyt+0].store(d_finavalu[offset_Cyt+0].load(mem_order) + J_cam_SLmyo/Vmyo, mem_order);
+	d_finavalu[offset_Cyt+1].store(d_finavalu[offset_Cyt+1].load(mem_order) + J_ca2cam_SLmyo/Vmyo, mem_order);
+	d_finavalu[offset_Cyt+2].store(d_finavalu[offset_Cyt+2].load(mem_order) + J_ca4cam_SLmyo/Vmyo, mem_order);
 
 }
 

@@ -11,6 +11,7 @@ __device__ void kernel_cam_2(	fp timeinst,
 													int com_offset,
 													fp Ca){
 
+     cuda::memory_order mem_order = cuda::memory_order_relaxed;
 	//=====================================================================
 	//	VARIABLES
 	//=====================================================================
@@ -328,24 +329,24 @@ __device__ void kernel_cam_2(	fp timeinst,
 	dCa4CaMCa4CaN = 1e-3*(rcn4CaN+rcn24CaN);											// Ca4CaMCa4CaN
 
 	// encode output array
-	d_finavalu[offset_1] = dCaM;
-	d_finavalu[offset_2] = dCa2CaM;
-	d_finavalu[offset_3] = dCa4CaM;
-	d_finavalu[offset_4] = dCaMB;
-	d_finavalu[offset_5] = dCa2CaMB;
-	d_finavalu[offset_6] = dCa4CaMB;
-	d_finavalu[offset_7] = dPb2;
-	d_finavalu[offset_8] = dPb;
-	d_finavalu[offset_9] = dPt;
-	d_finavalu[offset_10] = dPt2;
-	d_finavalu[offset_11] = dPa;
-	d_finavalu[offset_12] = dCa4CaN;
-	d_finavalu[offset_13] = dCaMCa4CaN;
-	d_finavalu[offset_14] = dCa2CaMCa4CaN;
-	d_finavalu[offset_15] = dCa4CaMCa4CaN;
+	d_finavalu[offset_1].store(dCaM, mem_order);
+	d_finavalu[offset_2].store(dCa2CaM, mem_order);
+	d_finavalu[offset_3].store(dCa4CaM, mem_order);
+	d_finavalu[offset_4].store(dCaMB, mem_order);
+	d_finavalu[offset_5].store(dCa2CaMB, mem_order);
+	d_finavalu[offset_6].store(dCa4CaMB, mem_order);
+	d_finavalu[offset_7].store(dPb2, mem_order);
+	d_finavalu[offset_8].store(dPb, mem_order);
+	d_finavalu[offset_9].store(dPt, mem_order);
+	d_finavalu[offset_10].store(dPt2, mem_order);
+	d_finavalu[offset_11].store(dPa, mem_order);
+	d_finavalu[offset_12].store(dCa4CaN, mem_order);
+	d_finavalu[offset_13].store(dCaMCa4CaN, mem_order);
+	d_finavalu[offset_14].store(dCa2CaMCa4CaN, mem_order);
+	d_finavalu[offset_15].store(dCa4CaMCa4CaN, mem_order);
 
 	// write to global variables for adjusting Ca buffering in EC coupling model
-	d_finavalu[com_offset] = 1e-3*(2*CaMKIItot*(rcnCKtt2-rcnCKb2b) - 2*(rcn02+rcn24+rcn02B+rcn24B+rcnCa4CaN+rcn02CaN+rcn24CaN)); // [uM/msec]
+	d_finavalu[com_offset].store(1e-3*(2*CaMKIItot*(rcnCKtt2-rcnCKb2b) - 2*(rcn02+rcn24+rcn02B+rcn24B+rcnCa4CaN+rcn02CaN+rcn24CaN)), mem_order); // [uM/msec]
 	//d_finavalu[JCa] = 1; // [uM/msec]
 	
 }
