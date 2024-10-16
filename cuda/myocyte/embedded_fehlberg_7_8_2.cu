@@ -361,7 +361,7 @@ __device__ void embedded_fehlberg_7_8_2(	fp h,
 		kernel_2(	timeinst_temp,
 							initvalu_temp,
 							parameter,
-							&finavalu_temp[j*EQUATIONS].load(mem_order),
+							&finavalu_temp[j*EQUATIONS],
 							com);
 
 	}
